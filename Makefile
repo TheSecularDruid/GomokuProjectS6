@@ -1,12 +1,12 @@
 CC = gcc
 CFLAGS= -Wall -Wextra -std=c99
-LIB= joueur1.so joueur2.so joueur3.so
+LIB= player1.so player2.so player3.so
 SRC=./src
 INSTALL=./install
 DIR=-I. -I../ -I./src/ -I./test
 
 build: $(SRC)/server.c $(LIB)
-	$(CC) $(CFLAGS) $< -o server -ldl
+	$(CC) $(CFLAGS) $(DIR) $< -o server -ldl
 
 test:
 
@@ -14,23 +14,23 @@ install:
 	cp $(SRC)/*.so $(INSTALL)/
 	cp server $(INSTALL)/
 
-joueur1.o: $(SRC)/joueur1.c
-	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/joueur1.o
+player1.o: $(SRC)/player1.c
+	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/player1.o
 
-joueur2.o: $(SRC)/joueur2.c
-	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/joueur2.o
+player2.o: $(SRC)/player2.c
+	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/player2.o
 
-joueur3.o: $(SRC)/joueur3.c
-	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/joueur3.o
+player3.o: $(SRC)/player3.c
+	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/player3.o
 
-joueur1.so: joueur1.o
-	$(CC) $(SRC)/joueur1.o -shared -o $(SRC)/joueur1.so
+player1.so: player1.o
+	$(CC) $(SRC)/player1.o -shared -o $(SRC)/player1.so
 
-joueur2.so: joueur2.o
-	$(CC) $(SRC)/joueur2.o -shared -o $(SRC)/joueur2.so
+player2.so: player2.o
+	$(CC) $(SRC)/player2.o -shared -o $(SRC)/player2.so
 
-joueur3.so: joueur3.o
-	$(CC) $(SRC)/joueur3.o -shared -o $(SRC)/joueur3.so
+player3.so: player3.o
+	$(CC) $(SRC)/player3.o -shared -o $(SRC)/player3.so
 
 clean:
 		rm ./src/*.o
