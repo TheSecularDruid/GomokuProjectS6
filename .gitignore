@@ -1,0 +1,4 @@
+# .gitignore -- List of files ignored by git
+*.[oa]
+*~
+./install/*
