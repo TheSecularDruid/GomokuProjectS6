@@ -4,9 +4,10 @@ LIB= player1.so player2.so player3.so
 SRC=./src
 INSTALL=./install
 DIR=-I. -I../ -I./src/ -I./test
+DEBUG= -g
 
 build: $(SRC)/server.c $(LIB)
-	$(CC) $(CFLAGS) $(DIR) $< -o server -ldl
+	$(CC) $(CFLAGS) $(DIR) $< -o server -ldl $(DEBUG)
 
 test:
 
