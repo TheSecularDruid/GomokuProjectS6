@@ -2,7 +2,7 @@
 #define _BITBOARD_PLAYER_H_
 
 #include <stddef.h>
-#include "move.h"
+#include "bitboard_move.h"
 
 /* Public functions */
 

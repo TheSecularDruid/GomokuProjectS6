@@ -26,7 +26,7 @@ struct col_move_t* propose_opening(size_t size) {
     struct col_move_t* opening = malloc(sizeof(struct col_move_t[3]));
     size_t abscissa=-1;
     size_t ordinate=-1;
-    for (int i=0;i<3;i++) {	
+    for (int i=0;i<3;i++) {
 	do {
 	    abscissa = rand()%size;
 	    ordinate = rand()%size;
