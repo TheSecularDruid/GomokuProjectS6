@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "move.h"
-#include "player.h"
+#include "bitboard_move.h"
+#include "bitboard_player.h"
 
 //This player just plays randomly something that they can play - pretty much a test in itself
 
