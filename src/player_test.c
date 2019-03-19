@@ -68,9 +68,10 @@ int main() {
     struct col_move_t moves[5]= {{ {5,4}, WHITE}, { {4,4}, BLACK}, { {5,5}, WHITE}, { {4,3} ,BLACK}, { {3,3}, WHITE}};
     int n_moves=2;
     struct col_move_t const previous_moves[2]={{ {4,3} ,BLACK}, { {3,3}, WHITE}};
+    initialize(board_size, WHITE);
     test_get_player_name() ;
     test_propose_opening(board_size);
     test_play(moves, board_size, previous_moves, n_moves);
-    printf("every test is successful");
+    printf("every test is successful\n");
     return 0;
 }
