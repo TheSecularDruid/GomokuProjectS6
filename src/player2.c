@@ -11,7 +11,7 @@ size_t grid_size = 0;
 int color = 0;
 
 char const* get_player_name() {
-  return("Random2");
+  return("Random");
 }
 
 int is_already_played(size_t a, size_t b, struct col_move_t const moves[], int size) {
@@ -38,7 +38,8 @@ struct col_move_t* propose_opening(size_t size) {
     else
     opening[i].c = BLACK;
   }
-  return opening; //WARNING : this memory would be freed by the server in the current implementation - should be further thought out
+  return opening; //WARNING : this memory would be freed by the server in
+                  //the current implementation - should be further thought out
 }
 
 int accept_opening(size_t size, const struct col_move_t* opening) {
@@ -47,7 +48,7 @@ int accept_opening(size_t size, const struct col_move_t* opening) {
 
 void initialize(size_t size, enum color_t id) {
   grid = malloc(sizeof(char[size*size]));
-  for (int k=0;k<size;k++) {
+  for (unsigned int k=0;k<size;k++) {
     grid[k]=-1;
   }
   grid_size = size;
