@@ -279,6 +279,7 @@ int main(int argc, char *argv[]) {
       current_player = compute_next_player(current_player,first_player,second_player);
       previous_moves = last_n(moves);
       current_move = current_player->play(previous_moves, get_move_number(previous_moves));
+      //printf("%zu\n",current_move.row );
       display_player_move(current_player,current_move);
       /*if (is_winning())
       {

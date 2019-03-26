@@ -50,7 +50,7 @@ int accept_opening(size_t size, const struct col_move_t* opening) {
 
 void initialize(size_t size, enum color_t id) {
     grid = malloc(sizeof(char[size*size]));
-    for (int k=0;k<size;k++) {
+    for (unsigned int k=0;k<size*size;k++) {
 	grid[k]=-1;
     }
     grid_size = size;
@@ -75,7 +75,7 @@ int is_out_of_bounds(struct move_t move) {
 
 
 int update_grid(struct col_move_t const previous_moves[], size_t n_moves) {
-    for (int i=0;i<n_moves;i++) {
+    for (unsigned int i=0;i<n_moves;i++) {
 	if(was_already_played(previous_moves[i].m) || is_out_of_bounds(previous_moves[i].m))
 	    return 0;
 	grid[move_to_grid_cell(previous_moves[i].m)] = previous_moves[i].c;
@@ -84,12 +84,14 @@ int update_grid(struct col_move_t const previous_moves[], size_t n_moves) {
 }
 
 struct move_t play(struct col_move_t const previous_moves[], size_t n_moves) {
+
     update_grid(previous_moves, n_moves);
     struct move_t next_move;
     do {
 	next_move.row = rand()%grid_size;
 	next_move.col = rand()%grid_size;
     }  while(was_already_played(next_move));
+    printf("%zu\n",next_move.row );
     return next_move;
 }
 
