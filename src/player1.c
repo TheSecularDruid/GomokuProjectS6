@@ -14,7 +14,7 @@ size_t grid_size = 0;
 int color = 0;
 
 char const* get_player_name() {
-    return("Random");
+  return("Random 1");
 }
 
 int is_already_played_opening(size_t a, size_t b, struct col_move_t const moves[], int size) {
@@ -29,7 +29,7 @@ struct col_move_t* propose_opening(size_t size) {
     struct col_move_t* opening = malloc(sizeof(struct col_move_t[3]));
     size_t abscissa=-1;
     size_t ordinate=-1;
-    for (int i=0;i<3;i++) {	
+    for (int i=0;i<3;i++) {
 	do {
 	    abscissa = rand()%size;
 	    ordinate = rand()%size;
@@ -85,7 +85,7 @@ int update_grid(struct col_move_t const previous_moves[], size_t n_moves) {
 
 struct move_t play(struct col_move_t const previous_moves[], size_t n_moves) {
     update_grid(previous_moves, n_moves);
-    struct move_t next_move;	
+    struct move_t next_move;
     do {
 	next_move.row = rand()%grid_size;
 	next_move.col = rand()%grid_size;
