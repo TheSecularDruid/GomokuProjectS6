@@ -50,7 +50,7 @@ int accept_opening(size_t size, const struct col_move_t* opening) {
 
 void initialize(size_t size, enum color_t id) {
     grid = malloc(sizeof(char[size*size]));
-    for (int k=0;k<size;k++) {
+    for (int k=0;k<size*size;k++) {
 	grid[k]=-1;
     }
     grid_size = size;
@@ -70,7 +70,7 @@ int was_already_played(struct move_t move) {
 }
 
 int is_out_of_bounds(struct move_t move) {
-    return (move_to_grid_cell(move)>grid_size*grid_size);
+    return (move_to_grid_cell(move)>(grid_size*grid_size));
 }
 
 
@@ -84,7 +84,7 @@ int update_grid(struct col_move_t const previous_moves[], size_t n_moves) {
 }
 
 struct move_t play(struct col_move_t const previous_moves[], size_t n_moves) {
-    update_grid(previous_moves, n_moves);
+    assert(update_grid(previous_moves, n_moves), "the server returned incorrect moves");
     struct move_t next_move;
     do {
 	next_move.row = rand()%grid_size;
