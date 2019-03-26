@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "bitboard_move.h"
 #include "bitboard_player.h"
 
 //This player just plays randomly something that they can play - pretty much a test in itself
+
+
 
 char* grid = NULL;
 size_t grid_size = 0;
@@ -52,6 +55,7 @@ void initialize(size_t size, enum color_t id) {
     }
     grid_size = size;
     color  = id;
+    srand(time(NULL));
 }
 
 int move_to_grid_cell(struct move_t move) {
