@@ -88,18 +88,39 @@ void display_player_move(struct player * current_player, struct move_t current_m
 /**********************************
 * Function for returning the last moves played
 ************************************/
-struct col_move_t * last_n(struct col_move_t * moves)
+struct col_move_t * last_n(struct col_move_t * moves, size_t size_moves)
 {
-  return moves;
+
+  struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
+
+  if ( size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4)
+  {
+    previous_moves = moves;
+  }
+  else
+  {
+    previous_moves[0] = moves[size_moves-2];
+    previous_moves[1] = moves[size_moves-1];
+  }
+
+  return previous_moves;
 }
 
 /**********************************
 * Function for returning the number of moves played
 ************************************/
-size_t get_move_number(struct col_move_t * previous_moves)
+size_t get_move_number(size_t size_moves)
 {
-  size_t number = 1;
-  return number;
+  int size;
+  if ( size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4)
+  {
+    size = size_moves;
+  }
+  else
+  {
+    size = 2;
+  }
+  return size;
 }
 
 /**********************************
@@ -137,7 +158,7 @@ void display_moves(struct col_move_t moves[],size_t size_moves)
 * Function for parsing the options of the program
 * Currently available options are :
 * -n <size> : sets the size of the grid
-* -o : sets the SWAP mode
+* -o : sets the SWAP mode2
 ************************************/
 void parse_opts(int argc, char* argv[]) {
   int opt;
@@ -218,7 +239,7 @@ int main(int argc, char *argv[]) {
     struct player * current_player = NULL;
 
     // array of three moves for the opening in SWAP mode
-    struct col_move_t * moves = malloc(sizeof(struct col_move_t[grid_size*grid_size]));;
+    struct col_move_t * moves;
     size_t size_moves = 0;
 
     // declaring the current move played
@@ -233,6 +254,7 @@ int main(int argc, char *argv[]) {
       printf("GAME STARTS IN SWAP MODE\n");
       // beginning of the game
       moves = first_player->propose_opening(grid_size);
+      moves = realloc(moves,sizeof(struct col_move_t[grid_size*grid_size]));
 
       // 2nd player plays next
       if (second_player->accept_opening(grid_size, moves))
@@ -271,15 +293,15 @@ int main(int argc, char *argv[]) {
       second_player->initialize(grid_size, WHITE);
       second_player->id = WHITE;
       current_player = second_player;
+      moves = malloc(sizeof(struct col_move_t[grid_size*grid_size]));;
     }
 
 
     while (laps < max_laps)
     {
       current_player = compute_next_player(current_player,first_player,second_player);
-      previous_moves = last_n(moves);
-      current_move = current_player->play(previous_moves, get_move_number(previous_moves));
-      //printf("%zu\n",current_move.row );
+      previous_moves = last_n(moves,size_moves);
+      current_move = current_player->play(previous_moves, get_move_number(size_moves));
       display_player_move(current_player,current_move);
       /*if (is_winning())
       {

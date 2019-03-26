@@ -20,7 +20,7 @@ install:
 play:
 	make build
 	make install
-	./server ./install/player1.so ./install/player2.so
+	./server ./install/player1.so ./install/player2.so -o
 
 player1.o: $(SRC)/player1.c
 	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/player1.o
