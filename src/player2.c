@@ -11,7 +11,7 @@ size_t grid_size = 0;
 int color = 0;
 
 char const* get_player_name() {
-  return("Random");
+  return("Random 2");
 }
 
 int is_already_played(size_t a, size_t b, struct col_move_t const moves[], int size) {
