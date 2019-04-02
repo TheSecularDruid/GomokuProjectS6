@@ -20,7 +20,7 @@ install:
 play:
 	make build
 	make install
-	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -n 7
+	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -n 7 
 
 bitboard.o: $(SRC)/bitboard.c $(SRC)/bitboard.h
 	$(CC) $(CFLAGS) -c $<
