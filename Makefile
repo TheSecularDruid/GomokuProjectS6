@@ -1,5 +1,5 @@
 PLAYER1=player1
-PLAYER2=playerKevin
+PLAYER2=player2
 CC = gcc
 CFLAGS= -Wall -Wextra -std=c99
 LIB= $(PLAYER1).so $(PLAYER2).so
@@ -20,7 +20,7 @@ install:
 play:
 	make build
 	make install
-	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -n 7 
+	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -o
 
 bitboard.o: $(SRC)/bitboard.c $(SRC)/bitboard.h
 	$(CC) $(CFLAGS) -c $<
