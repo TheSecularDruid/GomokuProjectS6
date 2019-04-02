@@ -38,6 +38,8 @@ void * get_symbol(void * handle, const char * symbol, int id)
   return res;
 }
 
+
+
 /**********************************
 * Function for initialising the struct player
 ************************************/
@@ -62,11 +64,11 @@ struct player * compute_next_player(struct player * previous_player,struct playe
   struct player * current_player = NULL;
   switch (previous_player->id) {
     case 0:
-      return player1;
-      break;
+    return player2;
+    break;
     case 1:
-      return player2;
-      break;
+    return player1;
+    break;
     default:
     fprintf(stderr,"Error in function next_player\n");
     exit(EXIT_FAILURE);
@@ -78,16 +80,89 @@ struct player * compute_next_player(struct player * previous_player,struct playe
 /**********************************
 * Function for displaying the player turn
 ************************************/
-void display_player_turn(struct player * player)
+void display_player_move(struct player * current_player, struct move_t current_move)
 {
-  printf("%s is playing: \n",player->get_name() );
+  printf("%s is playing in position (%zu,%zu) \n",current_player->get_name(), current_move.row, current_move.col );
 }
+
+/**********************************
+* Function for returning the last moves played
+************************************/
+void update_last_moves(struct col_move_t previous_moves[], struct col_move_t * moves, size_t size_moves)
+{
+  int openning_swap = (mode == SWAP && (size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4));
+  int openning_standard = (mode == STANDARD && (size_moves == 0 || size_moves == 1));
+
+  if (  openning_swap || openning_standard )
+  {
+    for (size_t i=0; i<size_moves; i++)
+    {
+      previous_moves[i] = moves[i];
+    }
+  }
+  else
+  {
+    previous_moves[0] = moves[size_moves-2];
+    previous_moves[1] = moves[size_moves-1];
+  }
+}
+
+/**********************************
+* Function for returning the number of moves played
+************************************/
+size_t get_move_number(size_t size_moves)
+{
+  int size;
+  int openning_swap = (mode == SWAP && (size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4));
+  int openning_standard = (mode == STANDARD && (size_moves == 0 || size_moves == 1));
+  if (  openning_swap || openning_standard )
+  {
+    size = size_moves;
+  }
+  else
+  {
+    size = 2;
+  }
+
+  return size;
+}
+
+/**********************************
+* Function for saving all the moves
+************************************/
+void enqueue(struct player * player, struct move_t current_move, struct col_move_t moves[], size_t size_moves)
+{
+  // we add the current move at the end
+  if (size_moves < grid_size *grid_size)
+  {
+    moves[size_moves].m = current_move;
+    moves[size_moves].c = player->id;
+  }
+  else
+  {
+    printf("Max number of element on the grid reached");
+  }
+}
+
+/**********************************
+* Function for displaying all the moves
+************************************/
+void display_moves(struct col_move_t moves[],size_t size_moves)
+{
+  printf("[");
+  for(unsigned int i=0; i < size_moves; i++)
+  {
+    printf("([%zu,%zu],%d) ",moves[i].m.row,moves[i].m.col,moves[i].c );
+  }
+  printf("]\n");
+}
+
 
 /**********************************
 * Function for parsing the options of the program
 * Currently available options are :
 * -n <size> : sets the size of the grid
-* -o : sets the SWAP mode
+* -o : sets the SWAP mode2
 ************************************/
 void parse_opts(int argc, char* argv[]) {
   int opt;
@@ -132,9 +207,6 @@ int main(int argc, char *argv[]) {
     void * handle_player1;
     void * handle_player2;
 
-    // array of three moves for the opening in SWAP mode
-    const struct col_move_t* moves;
-
     // get the lib player names
     lib_player1 = argv[optind];
     lib_player2 = argv[optind+1];
@@ -164,8 +236,22 @@ int main(int argc, char *argv[]) {
     }
 
     // initializing of the different player of the game
-    struct player * first_player = initialize_player(handle_player1,0);
-    struct player * second_player = initialize_player(handle_player2,1);
+    struct player * first_player = initialize_player(handle_player1,1);
+    struct player * second_player = initialize_player(handle_player2,2);
+
+    // declaring current player
+    struct player * current_player = NULL;
+
+    // array of three moves for the opening in SWAP mode
+    struct col_move_t * moves;
+    size_t size_moves = 0;
+
+    // declaring the current move played
+    struct move_t current_move;
+
+    // declaring array of previous moves
+    struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
+
 
     // Swap mode
     if (mode == SWAP)
@@ -173,19 +259,31 @@ int main(int argc, char *argv[]) {
       printf("GAME STARTS IN SWAP MODE\n");
       // beginning of the game
       moves = first_player->propose_opening(grid_size);
+      moves = realloc(moves,sizeof(struct col_move_t[grid_size*grid_size]));
 
       // 2nd player plays next
       if (second_player->accept_opening(grid_size, moves))
       {
+        printf("SECOND PLAYER ACCEPTS\n");
         first_player->initialize(grid_size, BLACK);
+        first_player->id = BLACK;
         second_player->initialize(grid_size, WHITE);
+        second_player->id = WHITE;
+        current_player = first_player;
       }
       // 2nd player refuses and 1st player plays next
       else
       {
+        printf("SECOND PLAYER REFUSES\n");
         first_player->initialize(grid_size, WHITE);
+        first_player->id = WHITE;
         second_player->initialize(grid_size, BLACK);
+        second_player->id = BLACK;
+        current_player = second_player;
       }
+
+      // update the number of elements of the array moves
+      size_moves = size_moves + 3;
 
       // update max_laps
       max_laps = max_laps - 3;
@@ -195,33 +293,44 @@ int main(int argc, char *argv[]) {
     else
     {
       printf("GAME STARTS IN STANDARD MODE\n");
-      printf("%s\n",first_player->get_name());
       first_player->initialize(grid_size, BLACK);
+      first_player->id = BLACK;
       second_player->initialize(grid_size, WHITE);
+      second_player->id = WHITE;
+      current_player = second_player;
+      moves = malloc(sizeof(struct col_move_t[grid_size*grid_size]));;
     }
 
-    // declareing current player
-    struct player * current_player = NULL;
 
     while (laps < max_laps)
     {
-      current_player = compute_next_player(first_player,first_player,second_player);
-      display_player_turn(current_player);
-      /*m = p->play(last_n(moves));
-      if (is_winning())
+      //display_moves(moves,size_moves);
+      current_player = compute_next_player(current_player,first_player,second_player);
+      update_last_moves(previous_moves,moves,size_moves);
+      //display_moves(previous_moves,get_move_number(size_moves));
+      current_move = current_player->play(previous_moves, get_move_number(size_moves));
+      display_player_move(current_player,current_move);
+      /*if (is_winning())
       {
-        break;
-      }
-      enqueue(m, moves);*/
-      laps++;
-    }
-
-    // finally clear allocated memory
-    first_player->finalize();
-    second_player->finalize();
-
-
-    dlclose(handle_player1);
-    dlclose(handle_player2);
+      break;
+    }*/
+    enqueue(current_player,current_move, moves, size_moves);
+    size_moves += 1;
+    laps++;
   }
+
+  display_moves(moves,size_moves);
+
+  // finally clear allocated memory
+  free(previous_moves);
+  free(moves);
+  first_player->finalize();
+  second_player->finalize();
+  free(first_player);
+  free(second_player);
+
+  // close the libs
+  dlclose(handle_player1);
+  dlclose(handle_player2);
+}
 }

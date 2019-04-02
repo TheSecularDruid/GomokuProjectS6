@@ -1,20 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <assert.h>
 
 #include "bitboard_move.h"
 #include "bitboard_player.h"
 
 //This player just plays randomly something that they can play - pretty much a test in itself
 
+/**********************************
+* Function for displaying all the moves
+************************************/
+void display_moves(const struct col_move_t moves[],size_t size_moves)
+{
+  printf("[");
+  for(unsigned int i=0; i < size_moves; i++)
+  {
+    printf("([%zu,%zu],%d) ",moves[i].m.row,moves[i].m.col,moves[i].c );
+  }
+  printf("]\n");
+}
+
 char* grid = NULL;
 size_t grid_size = 0;
 int color = 0;
 
 char const* get_player_name() {
-  return("Random");
+  return("Random 1");
 }
 
-int is_already_played(size_t a, size_t b, struct col_move_t const moves[], int size) {
+int is_already_played_opening(size_t a, size_t b, struct col_move_t const moves[], int size) {
   int k = 0;
   while (k++<size)
   if (a==moves[k].m.row && b==moves[k].m.col)
@@ -30,7 +45,7 @@ struct col_move_t* propose_opening(size_t size) {
     do {
       abscissa = rand()%size;
       ordinate = rand()%size;
-    } while (is_already_played(abscissa,ordinate,opening,i));
+    } while (is_already_played_opening(abscissa,ordinate,opening,i));
     opening[i].m.row = abscissa;
     opening[i].m.col = ordinate;
     if (i%2)   //if i is odd
@@ -42,26 +57,54 @@ struct col_move_t* propose_opening(size_t size) {
 }
 
 int accept_opening(size_t size, const struct col_move_t* opening) {
+  (void) size;
+  (void) opening;
   return 1;
 }
 
 void initialize(size_t size, enum color_t id) {
   grid = malloc(sizeof(char[size*size]));
-  for (int k=0;k<size;k++) {
+  for (unsigned int k=0;k<size*size;k++) {
     grid[k]=-1;
   }
   grid_size = size;
   color  = id;
+  srand(time(NULL));
+}
+
+unsigned int move_to_grid_cell(struct move_t move) {
+  return (move.row*grid_size+move.col);
+}
+
+int was_already_played(struct move_t move) {
+  if (grid[move_to_grid_cell(move)]==-1)
+  return 0;
+  else
+  return 1;
+}
+
+int is_out_of_bounds(struct move_t move) {
+  return (move_to_grid_cell(move)>(grid_size*grid_size));
+}
+
+
+int update_grid(struct col_move_t const previous_moves[], size_t n_moves) {
+  for (unsigned int i=0;i<n_moves;i++) {
+    if(was_already_played(previous_moves[i].m) || is_out_of_bounds(previous_moves[i].m))
+    return 0;
+    grid[move_to_grid_cell(previous_moves[i].m)] = previous_moves[i].c;
+  }
+  return 1;
 }
 
 struct move_t play(struct col_move_t const previous_moves[], size_t n_moves) {
-  int abscissa = -1;
-  int ordinate = -1;
+  //display_moves(previous_moves,n_moves);
+  assert(update_grid(previous_moves, n_moves));
+  struct move_t next_move;
   do {
-    abscissa = rand()%grid_size;
-    ordinate = rand()%grid_size;
-  }  while(is_already_played(abscissa, ordinate, previous_moves, n_moves));
-  struct move_t next_move = {abscissa,ordinate};
+    next_move.row = rand()%grid_size;
+    next_move.col = rand()%grid_size;
+  }  while(was_already_played(next_move));
   return next_move;
 }
 
