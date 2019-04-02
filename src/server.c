@@ -107,7 +107,7 @@ __uint128_t compute_next_board(struct player * current_player, struct bitboard *
 ************************************/
 void display_player_move(struct player * current_player, struct move_t current_move)
 {
-  printf("%s is playing in position (%zu,%zu) \n",current_player->get_name(), current_move.row, current_move.col );
+  printf("%s plays: (%zu,%zu) \n",current_player->get_name(), current_move.row, current_move.col );
 }
 
 /**********************************
@@ -209,7 +209,6 @@ void parse_opts(int argc, char* argv[]) {
       grid_size = atoi(optarg);
       break;
       case 'o':
-      printf("LA PARTIE COMMENCE EN MODE SWAP\n" );
       mode = SWAP;
       break;
       default:
@@ -232,7 +231,7 @@ int main(int argc, char *argv[]) {
     // to avoid a grid with a bad size
     while (grid_size < 5 || grid_size > 11)
     {
-      printf("Entrez une taille doit être comprise entre 5 et 11: ");
+      printf("The size of the grid must be between 5 and 11: ");
       scanf("%zu", &grid_size);
     }
 
@@ -298,15 +297,24 @@ int main(int argc, char *argv[]) {
     // Swap mode
     if (mode == SWAP)
     {
-      printf("GAME STARTS IN SWAP MODE\n");
+      printf("GAME STARTS IN SWAP MODE\n------------ OPPENING -------------\n");
       // beginning of the game
       moves = first_player->propose_opening(grid_size);
+
+      // update the number of elements of the array moves
+      size_moves = size_moves + 3;
+
+      // update max_laps
+      max_laps = max_laps - 3;
+
+      printf("%s proposes: ",first_player->get_name());
+      display_moves(moves,size_moves);
       moves = realloc(moves,sizeof(struct col_move_t[grid_size*grid_size]));
 
       // 2nd player plays next
       if (second_player->accept_opening(grid_size, moves))
       {
-        printf("SECOND PLAYER ACCEPTS\n");
+        printf("%s accepts those moves ...\n",second_player->get_name());
         first_player->initialize(grid_size, BLACK);
         first_player->id = BLACK;
         second_player->initialize(grid_size, WHITE);
@@ -316,19 +324,13 @@ int main(int argc, char *argv[]) {
       // 2nd player refuses and 1st player plays next
       else
       {
-        printf("SECOND PLAYER REFUSES\n");
+        printf("%s refuses those moves ...\n",second_player->get_name());
         first_player->initialize(grid_size, WHITE);
         first_player->id = WHITE;
         second_player->initialize(grid_size, BLACK);
         second_player->id = BLACK;
         current_player = second_player;
       }
-
-      // update the number of elements of the array moves
-      size_moves = size_moves + 3;
-
-      // update max_laps
-      max_laps = max_laps - 3;
 
     }
     // Standard mdoe
@@ -343,21 +345,16 @@ int main(int argc, char *argv[]) {
       moves = malloc(sizeof(struct col_move_t[grid_size*grid_size]));;
     }
 
-
+    printf("-------------- MOVES ----------------\n");
     while (laps < max_laps)
     {
-      //display_moves(moves,size_moves);
       current_player = compute_next_player(current_player,first_player,second_player);
       update_last_moves(previous_moves,moves,size_moves);
-      //display_moves(previous_moves,get_move_number(size_moves));
       current_move = current_player->play(previous_moves, get_move_number(size_moves));
       display_player_move(current_player,current_move);
-      //printf("PREMIER\n" );
       play_move(move_to_col_move(current_player,current_move,current_col_move),&board,grid_size);
-      //printf("DEUXIEME\n" );
       if (color_is_winning(compute_next_board(current_player,&board),grid_size,winning_threshold))
       {
-        printf("WINNER IS %s\n",current_player->get_name());
         break;
       }
       enqueue(current_player,current_move, moves, size_moves);
@@ -365,7 +362,18 @@ int main(int argc, char *argv[]) {
       laps++;
     }
 
+    printf("-------------- STATE OF THE BOARD ----------------\n");
     display_moves(moves,size_moves);
+
+    printf("-------------- RESULTS ----------------\n");
+    if ( laps == max_laps)
+    {
+      printf("Draw\n");
+    }
+    else
+    {
+      printf("%s wins!\n",current_player->get_name());
+    }
 
     // finally clear allocated memory
     free(current_col_move);
