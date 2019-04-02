@@ -31,6 +31,7 @@ __uint128_t bitwise_and(__uint128_t a, __uint128_t b){
   res= h;
   res<<=64;
   res+=e;
+  return res;
 }
 
 int pattern_is_matching(__uint128_t pattern, __uint128_t colored_board){
@@ -50,8 +51,8 @@ int color_is_winning(__uint128_t colored_board, size_t size, size_t winning_thre
     }
     for (size_t i=0; i<size-winning_threshold+1; i++) {
         for (size_t j=0; j<size-winning_threshold+1; j++) {
-            if (   (  ( (i==size-winning_threshold) && (j==size-winning_threshold) || (i==0) && (j==0) ) //upward diagonal being stuck in a corner there are no overlines possible
-                && ( pattern_is_matching(pattern_diag_up, colored_board) )  )
+            if (   (  ((i==size-winning_threshold && j==size-winning_threshold) || (i==0 && j==0)) //upward diagonal being stuck in a corner there are no overlines possible
+                &&  pattern_is_matching(pattern_diag_up, colored_board )  )
             || (  ( (i==0) || (j==size-winning_threshold) ) //upward diagonal touches left or bottom border
                 && ( pattern_is_matching(pattern_diag_up, colored_board) && pattern_is_matching(pattern_diag_up>>(size-1), colored_board)==0 )  )
             || (  ( (i== size-winning_threshold) || (j==0) ) //upward diagonal touches right or top border
@@ -91,8 +92,8 @@ int color_is_winning(__uint128_t colored_board, size_t size, size_t winning_thre
     }
     for (size_t i=0; i<size-winning_threshold+1; i++) {
         for (size_t j=0; j<size-winning_threshold+1; j++) {
-            if (   (  ( (i==0) && (j==size-winning_threshold) || (i==size-winning_threshold) && (j==0) ) //downward diagonal being stuck in a corner there are no overlines possible
-                && ( pattern_is_matching(pattern_diag_down, colored_board) )  )
+            if (   (  ( (i==0 && j==size-winning_threshold) || (i==size-winning_threshold && j==0) ) //downward diagonal being stuck in a corner there are no overlines possible
+                && pattern_is_matching(pattern_diag_down, colored_board)   )
             || (  ( (i==0) || (j==0) ) //downward diagonal touches left or top border
                 && ( pattern_is_matching(pattern_diag_down, colored_board) && pattern_is_matching(pattern_diag_down<<(size+1), colored_board)==0 )  )
             || (  ( (i==size-winning_threshold) || (j==0) ) //downward diagonal touches right or bottom border

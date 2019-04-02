@@ -14,6 +14,6 @@ struct bitboard{
 
 
 struct bitboard new_bitboard(void);
-int move_played (struct col_move_t *move_done, struct bitboard *board, size_t size);
+int play_move(struct col_move_t *move_done, struct bitboard *board, size_t size);
 int color_is_winning(__uint128_t colored_board, size_t size, size_t winning_threshold);
 #endif

@@ -3,13 +3,17 @@
 #include <dlfcn.h>
 #include <getopt.h>
 #include <string.h>
-#include <bitboard_move.h>
+#include "bitboard_move.h"
+#include "bitboard.h"
 
 // Different kind of mode
 enum mode{ SWAP, STANDARD};
 
 // Global grid size by default
 static size_t grid_size = 5;
+
+// Global number of pawns in a row to win
+static size_t winning_threshold = 5;
 
 // Global mode by default
 static int mode = STANDARD;
@@ -78,6 +82,27 @@ struct player * compute_next_player(struct player * previous_player,struct playe
 }
 
 /**********************************
+* Function for switching the board color
+************************************/
+__uint128_t compute_next_board(struct player * current_player, struct bitboard * board)
+{
+  __uint128_t current_board = 0;
+  switch (current_player->id) {
+    case BLACK:
+    return board->black;
+    break;
+    case WHITE:
+    return board->white;
+    break;
+    default:
+    fprintf(stderr,"Error in function compute_next_board\n");
+    exit(EXIT_FAILURE);
+  }
+
+  return current_board;
+}
+
+/**********************************
 * Function for displaying the player turn
 ************************************/
 void display_player_move(struct player * current_player, struct move_t current_move)
@@ -128,6 +153,17 @@ size_t get_move_number(size_t size_moves)
 }
 
 /**********************************
+* Function converting move_t into col_move_t
+************************************/
+struct col_move_t * move_to_col_move(struct player * current_player, struct move_t move, struct col_move_t * col_move)
+{
+  col_move->m.row = move.row;
+  col_move->m.col = move.col;
+  col_move->c = current_player->id;
+  return col_move;
+}
+
+/**********************************
 * Function for saving all the moves
 ************************************/
 void enqueue(struct player * player, struct move_t current_move, struct col_move_t moves[], size_t size_moves)
@@ -143,6 +179,7 @@ void enqueue(struct player * player, struct move_t current_move, struct col_move
     printf("Max number of element on the grid reached");
   }
 }
+
 
 /**********************************
 * Function for displaying all the moves
@@ -249,9 +286,14 @@ int main(int argc, char *argv[]) {
     // declaring the current move played
     struct move_t current_move;
 
+    // declaring the current move played
+    struct col_move_t * current_col_move = malloc(sizeof(struct col_move_t));
+
     // declaring array of previous moves
     struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
 
+    // declaring new bitboard
+    struct bitboard board = new_bitboard();
 
     // Swap mode
     if (mode == SWAP)
@@ -310,27 +352,32 @@ int main(int argc, char *argv[]) {
       //display_moves(previous_moves,get_move_number(size_moves));
       current_move = current_player->play(previous_moves, get_move_number(size_moves));
       display_player_move(current_player,current_move);
-      /*if (is_winning())
+      //printf("PREMIER\n" );
+      play_move(move_to_col_move(current_player,current_move,current_col_move),&board,grid_size);
+      //printf("DEUXIEME\n" );
+      if (color_is_winning(compute_next_board(current_player,&board),grid_size,winning_threshold))
       {
-      break;
-    }*/
-    enqueue(current_player,current_move, moves, size_moves);
-    size_moves += 1;
-    laps++;
+        printf("WINNER IS %s\n",current_player->get_name());
+        break;
+      }
+      enqueue(current_player,current_move, moves, size_moves);
+      size_moves += 1;
+      laps++;
+    }
+
+    display_moves(moves,size_moves);
+
+    // finally clear allocated memory
+    free(current_col_move);
+    free(previous_moves);
+    free(moves);
+    first_player->finalize();
+    second_player->finalize();
+    free(first_player);
+    free(second_player);
+
+    // close the libs
+    dlclose(handle_player1);
+    dlclose(handle_player2);
   }
-
-  display_moves(moves,size_moves);
-
-  // finally clear allocated memory
-  free(previous_moves);
-  free(moves);
-  first_player->finalize();
-  second_player->finalize();
-  free(first_player);
-  free(second_player);
-
-  // close the libs
-  dlclose(handle_player1);
-  dlclose(handle_player2);
-}
 }

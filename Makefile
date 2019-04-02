@@ -1,15 +1,15 @@
+PLAYER1=player1
+PLAYER2=playerKevin
 CC = gcc
 CFLAGS= -Wall -Wextra -std=c99
-LIB= player1.so player2.so player3.so
+LIB= $(PLAYER1).so $(PLAYER2).so
 SRC=./src
 INSTALL=./install
 DIR=-I. -I../ -I./src/ -I./test
 DEBUG= -g -O0
 
-
-
-build: $(SRC)/server.c $(LIB)
-	$(CC) $(CFLAGS) $(DIR) $< -o server -ldl $(DEBUG)
+build: $(SRC)/server.c $(SRC)/bitboard.o $(LIB)
+	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/bitboard.o -o server -ldl $(DEBUG)
 
 test:
 
@@ -20,25 +20,24 @@ install:
 play:
 	make build
 	make install
-	./server ./install/player1.so ./install/player2.so -o
+	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -n 7
 
-player1.o: $(SRC)/player1.c
-	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/player1.o
+bitboard.o: $(SRC)/bitboard.c $(SRC)/bitboard.h
+	$(CC) $(CFLAGS) -c $<
 
-player2.o: $(SRC)/player2.c
-	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/player2.o
+$(PLAYER1).o: $(SRC)/$(PLAYER1).c
+	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/$(PLAYER1).o
 
-player3.o: $(SRC)/player3.c
-	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/player3.o
+$(PLAYER2).o: $(SRC)/$(PLAYER2).c
+	$(CC) $(CFLAGS) -c $< -fPIC -o $(SRC)/$(PLAYER2).o
 
-player1.so: player1.o
-	$(CC) $(SRC)/player1.o -shared -o $(SRC)/player1.so
 
-player2.so: player2.o
-	$(CC) $(SRC)/player2.o -shared -o $(SRC)/player2.so
+$(PLAYER1).so: $(PLAYER1).o
+	$(CC) $(SRC)/$(PLAYER1).o -shared -o $(SRC)/$(PLAYER1).so
 
-player3.so: player3.o
-	$(CC) $(SRC)/player3.o -shared -o $(SRC)/player3.so
+$(PLAYER2).so: $(PLAYER2).o
+	$(CC) $(SRC)/$(PLAYER2).o -shared -o $(SRC)/$(PLAYER2).so
+
 
 clean:
 		rm ./src/*.o
