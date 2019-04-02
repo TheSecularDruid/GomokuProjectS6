@@ -64,11 +64,11 @@ struct player * compute_next_player(struct player * previous_player,struct playe
   struct player * current_player = NULL;
   switch (previous_player->id) {
     case 0:
-      return player2;
-      break;
+    return player2;
+    break;
     case 1:
-      return player1;
-      break;
+    return player1;
+    break;
     default:
     fprintf(stderr,"Error in function next_player\n");
     exit(EXIT_FAILURE);
@@ -90,10 +90,11 @@ void display_player_move(struct player * current_player, struct move_t current_m
 ************************************/
 struct col_move_t * last_n(struct col_move_t * moves, size_t size_moves)
 {
-
   struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
+  int openning_swap = (mode == SWAP && (size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4));
+  int openning_standard = (mode == STANDARD && (size_moves == 0 || size_moves == 1));
 
-  if ( size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4)
+  if (  openning_swap || openning_standard )
   {
     previous_moves = moves;
   }
@@ -112,7 +113,9 @@ struct col_move_t * last_n(struct col_move_t * moves, size_t size_moves)
 size_t get_move_number(size_t size_moves)
 {
   int size;
-  if ( size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4)
+  int openning_swap = (mode == SWAP && (size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4));
+  int openning_standard = (mode == STANDARD && (size_moves == 0 || size_moves == 1));
+  if (  openning_swap || openning_standard )
   {
     size = size_moves;
   }
@@ -120,6 +123,7 @@ size_t get_move_number(size_t size_moves)
   {
     size = 2;
   }
+
   return size;
 }
 
@@ -301,26 +305,27 @@ int main(int argc, char *argv[]) {
     {
       current_player = compute_next_player(current_player,first_player,second_player);
       previous_moves = last_n(moves,size_moves);
+      //display_moves(previous_moves,get_move_number(size_moves));
       current_move = current_player->play(previous_moves, get_move_number(size_moves));
       display_player_move(current_player,current_move);
       /*if (is_winning())
       {
-        break;
-      }*/
-      enqueue(current_player,current_move, moves, size_moves);
-      size_moves += 1;
-      laps++;
-    }
-
-    display_moves(moves,size_moves);
-
-    // finally clear allocated memory
-    // free(moves);
-    // first_player->finalize();
-    // second_player->finalize();
-
-    // close the libs
-    dlclose(handle_player1);
-    dlclose(handle_player2);
+      break;
+    }*/
+    enqueue(current_player,current_move, moves, size_moves);
+    size_moves += 1;
+    laps++;
   }
+
+  display_moves(moves,size_moves);
+
+  // finally clear allocated memory
+  // free(moves);
+  // first_player->finalize();
+  // second_player->finalize();
+
+  // close the libs
+  dlclose(handle_player1);
+  dlclose(handle_player2);
+}
 }

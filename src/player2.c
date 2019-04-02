@@ -98,6 +98,7 @@ int update_grid(struct col_move_t const previous_moves[], size_t n_moves) {
 }
 
 struct move_t play(struct col_move_t const previous_moves[], size_t n_moves) {
+  //display_moves(previous_moves,n_moves);
   assert(update_grid(previous_moves, n_moves));
   struct move_t next_move;
   do {
