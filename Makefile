@@ -4,7 +4,7 @@ LIB= player1.so player2.so player3.so
 SRC=./src
 INSTALL=./install
 DIR=-I. -I../ -I./src/ -I./test
-DEBUG= -g
+DEBUG= -g -O0
 
 
 

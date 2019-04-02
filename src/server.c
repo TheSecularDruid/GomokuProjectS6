@@ -88,23 +88,23 @@ void display_player_move(struct player * current_player, struct move_t current_m
 /**********************************
 * Function for returning the last moves played
 ************************************/
-struct col_move_t * last_n(struct col_move_t * moves, size_t size_moves)
+void update_last_moves(struct col_move_t previous_moves[], struct col_move_t * moves, size_t size_moves)
 {
-  struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
   int openning_swap = (mode == SWAP && (size_moves == 0 || size_moves == 1 || size_moves == 3 || size_moves == 4));
   int openning_standard = (mode == STANDARD && (size_moves == 0 || size_moves == 1));
 
   if (  openning_swap || openning_standard )
   {
-    previous_moves = moves;
+    for (size_t i=0; i<size_moves; i++)
+    {
+      previous_moves[i] = moves[i];
+    }
   }
   else
   {
     previous_moves[0] = moves[size_moves-2];
     previous_moves[1] = moves[size_moves-1];
   }
-
-  return previous_moves;
 }
 
 /**********************************
@@ -250,7 +250,8 @@ int main(int argc, char *argv[]) {
     struct move_t current_move;
 
     // declaring array of previous moves
-    struct col_move_t * previous_moves = NULL;
+    struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
+
 
     // Swap mode
     if (mode == SWAP)
@@ -303,8 +304,9 @@ int main(int argc, char *argv[]) {
 
     while (laps < max_laps)
     {
+      //display_moves(moves,size_moves);
       current_player = compute_next_player(current_player,first_player,second_player);
-      previous_moves = last_n(moves,size_moves);
+      update_last_moves(previous_moves,moves,size_moves);
       //display_moves(previous_moves,get_move_number(size_moves));
       current_move = current_player->play(previous_moves, get_move_number(size_moves));
       display_player_move(current_player,current_move);
@@ -320,9 +322,12 @@ int main(int argc, char *argv[]) {
   display_moves(moves,size_moves);
 
   // finally clear allocated memory
-  // free(moves);
-  // first_player->finalize();
-  // second_player->finalize();
+  free(previous_moves);
+  free(moves);
+  first_player->finalize();
+  second_player->finalize();
+  free(first_player);
+  free(second_player);
 
   // close the libs
   dlclose(handle_player1);
