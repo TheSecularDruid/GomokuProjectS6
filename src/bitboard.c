@@ -80,10 +80,10 @@ int color_is_winning(struct bitboard board, enum color_t color, size_t size, siz
         for (size_t j=0; j<size-winning_threshold+1; j++) {
             if (   (  ((i==size-winning_threshold && j==size-winning_threshold) || (i==0 && j==0)) //upward diagonal being stuck in a corner there are no overlines possible
                 &&  pattern_is_matching(pattern_diag_up, colored_board )  )
-            || (  ( (i==0) || (j==size-winning_threshold) ) //upward diagonal touches left or bottom border
-                && ( pattern_is_matching(pattern_diag_up, colored_board) && pattern_is_matching(pattern_diag_up>>(size-1), colored_board)==0 )  )
-            || (  ( (i== size-winning_threshold) || (j==0) ) //upward diagonal touches right or top border
+            || (  ( (i==0) || (j==size-winning_threshold) ) //upward diagonal touches right or top border
                 && ( pattern_is_matching(pattern_diag_up, colored_board) && pattern_is_matching(pattern_diag_up<<(size-1), colored_board)==0 )  )
+            || (  ( (i== size-winning_threshold) || (j==0) ) //upward diagonal touches left or bottom border
+                && ( pattern_is_matching(pattern_diag_up, colored_board) && pattern_is_matching(pattern_diag_up>>(size-1), colored_board)==0 )  )
             || ( pattern_is_matching(pattern_diag_up, colored_board) && pattern_is_matching(pattern_diag_up<<(size-1), colored_board)==0  //upward diagonal doesn't touch any corner: overlines are possibles both ways
                 && pattern_is_matching(pattern_diag_up>>(size-1), colored_board)==0 ) )
                     return 1;
@@ -122,11 +122,11 @@ int color_is_winning(struct bitboard board, enum color_t color, size_t size, siz
             if (   (  ( (i==0 && j==size-winning_threshold) || (i==size-winning_threshold && j==0) ) //downward diagonal being stuck in a corner there are no overlines possible
                 && pattern_is_matching(pattern_diag_down, colored_board)   )
             || (  ( (i==0) || (j==0) ) //downward diagonal touches left or top border
-                && ( pattern_is_matching(pattern_diag_down, colored_board) && pattern_is_matching(pattern_diag_down<<(size+1), colored_board)==0 )  )
-            || (  ( (i==size-winning_threshold) || (j==0) ) //downward diagonal touches right or bottom border
                 && ( pattern_is_matching(pattern_diag_down, colored_board) && pattern_is_matching(pattern_diag_down>>(size+1), colored_board)==0 )  )
+            || (  ( (i==size-winning_threshold) || (j==size-winning_threshold) ) //downward diagonal touches right or bottom border
+                && ( pattern_is_matching(pattern_diag_down, colored_board) && pattern_is_matching(pattern_diag_down<<(size+1), colored_board)==0 )  )
             || ( pattern_is_matching(pattern_diag_down, colored_board) && pattern_is_matching(pattern_diag_down>>(size+1), colored_board)==0  //downward diagonal doesn't touch any corner: overlines are possibles both ways
-                && pattern_is_matching(pattern_diag_down>>(size+1), colored_board)==0 ) )
+                && pattern_is_matching(pattern_diag_down<<(size+1), colored_board)==0 ) )
                     return 1;
             pattern_diag_down<<=1;
 
@@ -136,7 +136,7 @@ int color_is_winning(struct bitboard board, enum color_t color, size_t size, siz
     return 0;
   }
   //TODO vérifier que la ligne est de longueur au plus 5 DONE
-  int main(){
+  /*int main(){
     struct bitboard b= new_bitboard();
     __uint128_t x= 1+128+16384+16384*128+16384*128*128;
     __uint128_t y= 32+32*32+32*32*32+32*32*32*32+32*32*32*32*32+32*32*32*32*32*32;
@@ -146,4 +146,4 @@ int color_is_winning(struct bitboard board, enum color_t color, size_t size, siz
     printf("%d\n", pattern_is_matching( y,x));
     printf ("%d\n" ,color_is_winning(b ,WHITE, 6, 5));
         return 0;
-  }
+  }*/
