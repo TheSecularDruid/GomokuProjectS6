@@ -139,11 +139,11 @@ int color_is_winning(struct bitboard board, enum color_t color, size_t size, siz
   int main(){
     struct bitboard b= new_bitboard();
     __uint128_t x= 1+128+16384+16384*128+16384*128*128;
-    __uint128_t y= 1+64+64*64+64*64*64+64*64*64*64+64*64*64*64*64;
+    __uint128_t y= 32+32*32+32*32*32+32*32*32*32+32*32*32*32*32+32*32*32*32*32*32;
     //x+=64*64*64*64*64;
-    b.white=x;
+    b.white=y;
     printf("%llu\n", bitwise_and(x, y) );
-    printf("%d\n", pattern_is_matching( x,y));
+    printf("%d\n", pattern_is_matching( y,x));
     printf ("%d\n" ,color_is_winning(b ,WHITE, 6, 5));
         return 0;
   }
