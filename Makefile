@@ -8,10 +8,12 @@ INSTALL=./install
 DIR=-I. -I../ -I./src/ -I./test
 DEBUG= -g -O0
 
-build: $(SRC)/server.c $(SRC)/bitboard.o $(LIB)
-	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/bitboard.o -o server -ldl $(DEBUG)
+build:
+	make main.o
 
-test:
+test: $(SRC)/server_tests.c $(SRC)/server.o $(SRC)/bitboard.o $(LIB)
+	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/server.o -o server_tests -ldl $(DEBUG)
+	./server_tests
 
 install:
 	cp $(SRC)/*.so $(INSTALL)/
@@ -20,7 +22,13 @@ install:
 play:
 	make build
 	make install
-	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -o
+	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -n 6 
+
+main.o: $(SRC)/main.c $(SRC)/server.c $(SRC)/bitboard.o $(LIB)
+	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/server.c $(SRC)/bitboard.o -o server -ldl $(DEBUG)
+
+server.o: $(SRC)/server.c $(SRC)/server.h
+		$(CC) $(CFLAGS) -c $<
 
 bitboard.o: $(SRC)/bitboard.c $(SRC)/bitboard.h
 	$(CC) $(CFLAGS) -c $<
