@@ -13,6 +13,7 @@ build:
 
 test: $(SRC)/server_tests.c $(SRC)/server.o $(SRC)/bitboard.o $(LIB)
 	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/server.o -o server_tests -ldl $(DEBUG)
+	cp $(SRC)/*.so $(INSTALL)/
 	./server_tests
 
 install:

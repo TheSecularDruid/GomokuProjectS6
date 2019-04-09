@@ -164,18 +164,17 @@ int main(int argc, char *argv[]) {
     printf("-------------- MOVES ----------------\n");
     while (laps < max_laps)
     {
-      current_player = compute_next_player(current_player,first_player,second_player);
+      current_player = compute_next_player(current_player->id,first_player,second_player);
       update_last_moves(previous_moves,moves,size_moves);
-      current_move = current_player->play(previous_moves, get_move_number(size_moves));
-      display_player_move(current_player,current_move);
-      play_move(move_to_col_move(current_player,current_move,current_col_move),&board,grid_size);
-      enqueue(current_player,current_move, moves, size_moves);
+      current_move = current_player->play(previous_moves, get_move_number(size_moves,mode));
+      display_player_move(current_player->get_name(),current_move);
+      play_move(move_to_col_move(current_player->id,current_move,current_col_move),&board,grid_size);
+      enqueue(current_player->id,current_move, moves, size_moves);
       size_moves ++;
       if (color_is_winning(board,current_player->id,grid_size,winning_threshold))
       {
         break;
       }
-      printf("%d\n",laps);
       laps++;
 
     }

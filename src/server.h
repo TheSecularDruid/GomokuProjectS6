@@ -33,13 +33,13 @@ struct player {
 
 void * get_symbol(void * handle, const char * symbol, int id);
 struct player * initialize_player(void * handle_player, int id);
-struct player * compute_next_player(struct player * previous_player,struct player * player1, struct player * player2);
-__uint128_t compute_next_board(struct player * current_player, struct bitboard * board);
-void display_player_move(struct player * current_player, struct move_t current_move);
+struct player * compute_next_player(int id, struct player * player1, struct player * player2);
+__uint128_t compute_next_board(int id, struct bitboard * board);
+void display_player_move(const char * name, struct move_t current_move);
 void update_last_moves(struct col_move_t previous_moves[], struct col_move_t * moves, size_t size_moves);
-size_t get_move_number(size_t size_moves);
-struct col_move_t * move_to_col_move(struct player * current_player, struct move_t move, struct col_move_t * col_move);
-void enqueue(struct player * player, struct move_t current_move, struct col_move_t moves[], size_t size_moves);
+size_t get_move_number(size_t size_moves, int mode);
+struct col_move_t * move_to_col_move(int id, struct move_t move, struct col_move_t * col_move);
+void enqueue(int id, struct move_t current_move, struct col_move_t moves[], size_t size_moves);
 void display_moves(struct col_move_t moves[],size_t size_moves);
 void show_grid(struct col_move_t moves[], size_t size_moves);
 
