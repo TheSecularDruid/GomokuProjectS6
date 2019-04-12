@@ -40,9 +40,9 @@ $(PLAYER2).so: $(PLAYER2).o
 
 
 clean:
-		rm ./src/*.o
-		rm ./src/*.so
-		rm install/*
-		rm server
+		rm -f ./src/*.o
+		rm -f ./src/*.so
+		rm -f install/*
+		rm -f server
 
 .PHONY: clean install
