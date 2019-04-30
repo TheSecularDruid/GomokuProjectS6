@@ -39,7 +39,6 @@ __uint128_t eqor(__uint128_t arg1, __uint128_t arg2) {
 */
 int play_move(const struct col_move_t* move_done, struct bitboard* board, size_t size) {
     __uint128_t boardmove = move_to_board(move_done->m, size);
-    printf("\nboardmove %llu\nboard %llu\n\n", (unsigned long long int)(boardmove), (unsigned long long int)(board->white));
     if (move_done->c==WHITE)
 	board->white |= boardmove;
     if (move_done->c==BLACK)
