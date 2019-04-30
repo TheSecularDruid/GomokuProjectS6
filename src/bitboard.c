@@ -147,3 +147,18 @@ int color_is_winning(struct bitboard board, enum color_t color, size_t size, siz
     printf ("%d\n" ,color_is_winning(b ,WHITE, 6, 5));
         return 0;
   }*/
+
+
+void print_board(__uint128_t to_print, size_t size) {
+    __uint128_t mask = 1;
+    for (size_t i=0;i<size;i++) {
+	for (size_t j=0;j<size;j++) {
+	    if (mask&to_print)
+		printf("%d ", 1);
+	    else
+		printf("%d ", 0);
+	    mask*=2;
+	}
+	printf("\n");
+    }
+}
