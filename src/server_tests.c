@@ -62,10 +62,6 @@ int test_initialize_player()
 
 int test_compute_next_player()
 {
-  /*struct player previous_player ;
-  struct player player1 ;
-  struct player player2;
-  previous_player = compute_next_player(previous_player,player1,player2);
 
   void * handle_player1;
   void * handle_player2;
@@ -81,27 +77,28 @@ int test_compute_next_player()
     printf("Error in 'dlopen' for player 2\n");
     exit(1);
   }
-*/
 
-  return 0;
+  struct player * next_player;
+  struct player * player1 = initialize_player(handle_player1,1);
+  struct player * player2 = initialize_player(handle_player2,2);
+  next_player = compute_next_player(player1->id,player1,player2);
+
+  int result = (next_player->id == player2->id);
+
+  player1->finalize();
+  player2->finalize();
+  free(player1);
+  free(player2);
+  dlclose(handle_player1);
+  dlclose(handle_player2);
+  return result;
 }
 
-int test_compute_next_board()
-{
-
-  return 0;
-}
 
 int test_update_last_moves()
 {
   struct col_move_t * moves = malloc(sizeof(struct col_move_t[grid_size*grid_size]));;
   struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
-  //struct col_move_t move_one = {{1,1},1};
-  //struct col_move_t move_two = {{2,2},2};
-  //struct col_move_t move_three = {{3,3},3};
-  // moves[0] = move_one;
-  //moves[1] = move_two;
-  //moves[3] = move_three;
 
   update_last_moves(previous_moves,moves,3);
 
@@ -143,7 +140,31 @@ int test_move_to_col_move()
 
 int test_enqueue()
 {
-  return 0;
+  struct col_move_t * moves = malloc(sizeof(struct col_move_t[25]));
+  struct move_t * move1 = malloc (sizeof(struct move_t));
+  move1->row = 0;
+  move1->row = 0;
+  struct move_t * move2 = malloc (sizeof(struct move_t));
+  move2->row = 1;
+  move2->row = 1;
+  moves[0].m = *move1;
+  moves[0].c = 1;
+  moves[1].m = *move2;
+  moves[1].c = 2;
+  struct move_t * new_move = malloc (sizeof(struct move_t));
+  move2->row = 2;
+  move2->row = 2;
+  size_t id_player = 1;
+  int number_of_element = 2;
+  size_t size_max = 25;
+  enqueue(id_player,*new_move,moves,number_of_element,size_max);
+  int result = (moves[number_of_element].m.row == new_move->row && moves[number_of_element].m.col == new_move->col
+    && moves[number_of_element].c == id_player);
+  free(move1);
+  free(move2);
+  free(new_move);
+  free(moves);
+  return result;
 }
 
 int main()
@@ -155,7 +176,6 @@ int main()
   test_case("Test get symbol",test_get_symbol(),&passed,&total);
   test_case("Test initialize player",test_initialize_player(),&passed,&total);
   test_case("Test compute next player",test_compute_next_player(),&passed,&total);
-  test_case("Test compute next board",test_compute_next_board(),&passed,&total);
   test_case("Test update last moves",test_update_last_moves(),&passed,&total);
   test_case("Test get move number",test_get_move_number(),&passed,&total);
   test_case("Test convert move to col move",test_move_to_col_move(),&passed,&total);
