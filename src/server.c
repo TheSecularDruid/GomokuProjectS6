@@ -32,21 +32,17 @@ struct player * initialize_player(void * handle_player, int id)
 /**********************************
 * Function for switching the player turn
 ************************************/
-struct player * compute_next_player(int id,struct player * player1, struct player * player2)
+struct player * compute_next_player(int id, struct player * player1, struct player * player2)
 {
   struct player * current_player = NULL;
-  switch (id) {
-    case 0:
+  if (id == player1->id)
+  {
     return player2;
-    break;
-    case 1:
-    return player1;
-    break;
-    default:
-    fprintf(stderr,"Error in function next_player\n");
-    exit(EXIT_FAILURE);
   }
-
+  if (id == player2->id)
+  {
+    return player1;
+  }
   return current_player;
 }
 
@@ -135,10 +131,10 @@ struct col_move_t * move_to_col_move(int id, struct move_t move, struct col_move
 /**********************************
 * Function for saving all the moves
 ************************************/
-void enqueue(int id, struct move_t current_move, struct col_move_t moves[], size_t size_moves)
+void enqueue(int id, struct move_t current_move, struct col_move_t moves[], size_t size_moves,size_t size_max)
 {
   // we add the current move at the end
-  if (size_moves < grid_size *grid_size)
+  if (size_moves < size_max)
   {
     moves[size_moves].m = current_move;
     moves[size_moves].c = id;

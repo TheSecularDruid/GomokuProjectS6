@@ -169,7 +169,7 @@ int main(int argc, char *argv[]) {
       current_move = current_player->play(previous_moves, get_move_number(size_moves,mode));
       display_player_move(current_player->get_name(),current_move);
       play_move(move_to_col_move(current_player->id,current_move,current_col_move),&board,grid_size);
-      enqueue(current_player->id,current_move, moves, size_moves);
+      enqueue(current_player->id,current_move, moves, size_moves,grid_size*grid_size);
       size_moves ++;
       if (color_is_winning(board,current_player->id,grid_size,winning_threshold))
       {

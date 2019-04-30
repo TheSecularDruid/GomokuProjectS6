@@ -39,7 +39,7 @@ void display_player_move(const char * name, struct move_t current_move);
 void update_last_moves(struct col_move_t previous_moves[], struct col_move_t * moves, size_t size_moves);
 size_t get_move_number(size_t size_moves, int mode);
 struct col_move_t * move_to_col_move(int id, struct move_t move, struct col_move_t * col_move);
-void enqueue(int id, struct move_t current_move, struct col_move_t moves[], size_t size_moves);
+void enqueue(int id, struct move_t current_move, struct col_move_t moves[], size_t size_moves, size_t size_max);
 void display_moves(struct col_move_t moves[],size_t size_moves);
 void show_grid(struct col_move_t moves[], size_t size_moves);
 
