@@ -137,18 +137,20 @@ int color_is_winning(struct bitboard board, enum color_t color, size_t size, siz
 struct move_t board_to_move(__uint128_t board, size_t size) {    //board must, of course, contain only one move
   struct move_t ret = {0,0};
   while(board!=1) {
-    ret.row++;
-    if(ret.row==size) {
-      ret.col++;
-      ret.row = 0;
+    ret.col++;
+    if(ret.col==size) {
+      ret.row++;
+      ret.col = 0;
     }
     board/=2;
   }
+  return ret;
 }
 
-move_t detect_line(struct bitboard board, enum color_t color, size_t size, size_t size_line) {
-  __uint128_t 
-};
+//struct move_t detect_line(struct bitboard board, enum color_t color, size_t size, size_t size_line) {
+//    __uint128_t temp;
+    
+//};
 
 void print_board(__uint128_t to_print, size_t size) {
     __uint128_t mask = 1;
