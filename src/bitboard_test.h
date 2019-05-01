@@ -21,5 +21,5 @@ __uint128_t shift_other_diag(__uint128_t to_shift, size_t size);
 __uint128_t power_of_2(int power);
 __uint128_t move_to_board(struct move_t move, size_t size);
 int color_is_winning(struct bitboard board, enum color_t color, size_t size, size_t winning_threshold);
-
+struct move_t board_to_move(__uint128_t board, size_t size);
 #endif
