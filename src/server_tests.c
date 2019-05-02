@@ -1,4 +1,5 @@
 #include "server.h"
+#include "player_test.h"
 
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
@@ -19,7 +20,7 @@ int test_get_symbol()
   void * handle_player;
 
   // loading both libs
-  handle_player = dlopen("./install/player1.so", RTLD_NOW);
+  handle_player = dlopen("./install/playerKevin.so", RTLD_NOW);
   if (!handle_player) {
     printf("Error in 'dlopen' for player 1\n");
     return 0;
@@ -37,7 +38,7 @@ int test_initialize_player()
   void * handle_player;
 
   // loading both libs
-  handle_player = dlopen("./install/player1.so", RTLD_NOW);
+  handle_player = dlopen("./install/playerKevin.so", RTLD_NOW);
   if (!handle_player) {
     printf("Error in 'dlopen' for player 1\n");
     exit(1);
@@ -67,12 +68,12 @@ int test_compute_next_player()
   void * handle_player2;
 
   // loading both libs
-  handle_player1 = dlopen("./install/player1.so", RTLD_NOW);
+  handle_player1 = dlopen("./install/playerKevin.so", RTLD_NOW);
   if (!handle_player1) {
     printf("Error in 'dlopen' for player 1\n");
     exit(1);
   }
-  handle_player2 = dlopen("./install/player2.so", RTLD_NOW);
+  handle_player2 = dlopen("./install/playerRandom.so", RTLD_NOW);
   if (!handle_player2) {
     printf("Error in 'dlopen' for player 2\n");
     exit(1);
@@ -171,8 +172,7 @@ int main()
 {
   int passed = 0;
   int total = 0;
-  printf("============= TEST SERVER FUNCTIONS ===============\n");
-  // /test_case("Add a negative int",test_add_negative(),&passed,&total);
+  printf("============= TESTING SERVER FUNCTIONS ===============\n");
   test_case("Test get symbol",test_get_symbol(),&passed,&total);
   test_case("Test initialize player",test_initialize_player(),&passed,&total);
   test_case("Test compute next player",test_compute_next_player(),&passed,&total);
@@ -182,5 +182,23 @@ int main()
   test_case("Test enqueue move",test_enqueue(),&passed,&total);
   printf("%sTESTS PASSED: %d/%d\n",((passed-total)==0? KGRN : KRED),passed,total);
   printf("%s", KWHT);
+
+  printf("============= TESTING PLAYER FUNCTIONS ===============\n");
+  int board_size = rand()%7+5;
+  struct col_move_t moves[5]= {{ {5,4}, WHITE}, { {4,4}, BLACK}, { {5,5}, WHITE}, { {4,3} ,BLACK}, { {3,3}, WHITE}};
+  int n_moves=2;
+  struct col_move_t const previous_moves[2]={{ {4,3} ,BLACK}, { {3,3}, WHITE}};
+  initialize(board_size, WHITE);
+  test_case("Test get player name",test_get_player_name(),&passed,&total);
+  test_case("Test propose opening",test_propose_opening(board_size),&passed,&total);
+  test_case("Test play move",test_play(moves, board_size, previous_moves, n_moves),&passed,&total);
+  printf("%sTESTS PASSED: %d/%d\n",((passed-total)==0? KGRN : KRED),passed,total);
+  printf("%s", KWHT);
+
+  printf("============= TESTING BITBOARD FUNCTIONS ===============\n");
+
+  printf("%sTESTS PASSED: %d/%d\n",((passed-total)==0? KGRN : KRED),passed,total);
+  printf("%s", KWHT);
+
   return 0;
 }
