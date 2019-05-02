@@ -3,7 +3,7 @@ PLAYER2=playerKevin
 PLAYER3=playerMinMax
 CC = gcc
 CFLAGS= -Wall -Wextra -std=c99
-LIB= $(PLAYER1).so $(PLAYER2).so $(PLAYER3).so
+LIB= $(PLAYER1).so $(PLAYER2).so
 SRC=./src
 INSTALL=./install
 DIR=-I. -I../ -I./src/ -I./test
@@ -12,8 +12,8 @@ DEBUG= -g -O0
 build:
 	make main.o
 
-test: $(SRC)/server_tests.c $(SRC)/player_test.o $(SRC)/server.o $(SRC)/$(PLAYER2).c $(SRC)/bitboard.o $(LIB)
-	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/server.o $(SRC)/player_test.o $(SRC)/$(PLAYER2).c -o server_tests -ldl $(DEBUG)
+test: $(SRC)/server_tests.c $(SRC)/player_test.o $(SRC)/server.o $(SRC)/$(PLAYER1).c $(SRC)/bitboard.o $(LIB)
+	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/server.o $(SRC)/player_test.o -o server_tests $(SRC)/$(PLAYER1).c $(SRC)/bitboard.o -ldl $(DEBUG)
 	cp $(SRC)/*.so $(INSTALL)/
 	./server_tests
 
