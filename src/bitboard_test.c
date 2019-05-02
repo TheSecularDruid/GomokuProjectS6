@@ -102,7 +102,7 @@ int test_color_is_winning() {
 int test_board_to_move() {
   size_t size = rand()%7+5;
   struct move_t to_play = {rand()%size, rand()%size};
-  //assert(board_to_move(move_to_board(to_play, size),size)); ?
+  //assert(board_to_move(move_to_board(to_play, size),size)); ?compilation bug
   printf("Test board to move is verified\n");
 }
 

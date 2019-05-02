@@ -48,8 +48,6 @@ int main(int argc, char *argv[]) {
       scanf("%zu", &grid_size);
     }
 
-    printf("%zu\n",grid_size );
-
     // pointers to the lib name
     char * lib_player1;
     char * lib_player2;

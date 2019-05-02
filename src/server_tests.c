@@ -197,8 +197,21 @@ int main()
 
   printf("============= TESTING BITBOARD FUNCTIONS ===============\n");
 
+  /*srand(time(NULL));
+  test_print();
+  test_play_move();
+  test_power_and_move_to_board();
+  printf("\ntest of shift_left :\n");
+  test_shift_left();
+  printf("\ntest of shift_up :\n");
+  test_shift_up();
+  printf("\ntest of shift_diag :\n");
+  test_shift_diag();
+  printf("\ntest of shift_other_diag :\n");
+  test_shift_other_diag();
+  test_color_is_winning();
   printf("%sTESTS PASSED: %d/%d\n",((passed-total)==0? KGRN : KRED),passed,total);
-  printf("%s", KWHT);
+  printf("%s", KWHT);*/
 
   return 0;
 }
