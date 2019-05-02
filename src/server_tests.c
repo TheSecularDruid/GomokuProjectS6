@@ -1,5 +1,8 @@
+#include <time.h>
+
 #include "server.h"
 #include "player_test.h"
+#include "bitboard_test.h"
 
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"
@@ -170,6 +173,7 @@ int test_enqueue()
 
 int main()
 {
+  srand(time(NULL));
   int passed = 0;
   int total = 0;
   printf("============= TESTING SERVER FUNCTIONS ===============\n");
@@ -197,21 +201,11 @@ int main()
 
   printf("============= TESTING BITBOARD FUNCTIONS ===============\n");
 
-  /*srand(time(NULL));
-  test_print();
-  test_play_move();
-  test_power_and_move_to_board();
-  printf("\ntest of shift_left :\n");
-  test_shift_left();
-  printf("\ntest of shift_up :\n");
-  test_shift_up();
-  printf("\ntest of shift_diag :\n");
-  test_shift_diag();
-  printf("\ntest of shift_other_diag :\n");
-  test_shift_other_diag();
-  test_color_is_winning();
+  test_case("Test creation of a bitboard",test_new_bitboard(),&passed,&total);
+  test_case("Test updating bitboard after a move",test_play_move(),&passed,&total);
+  test_case("Test if a player won",test_color_is_winning(),&passed,&total);
   printf("%sTESTS PASSED: %d/%d\n",((passed-total)==0? KGRN : KRED),passed,total);
-  printf("%s", KWHT);*/
+  printf("%s", KWHT);
 
   return 0;
 }
