@@ -24,7 +24,7 @@ install:
 play:
 	make build
 	make install
-	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -n 6
+	./server ./install/$(PLAYER1).so ./install/$(PLAYER2).so -n 6 
 
 main.o: $(SRC)/main.c $(SRC)/server.c $(SRC)/bitboard.o $(LIB)
 	$(CC) $(CFLAGS) $(DIR) $< $(SRC)/server.c $(SRC)/bitboard.o -o server -ldl $(DEBUG)
