@@ -11,7 +11,7 @@
 /**********************************
 * Function for displaying all the moves
 ************************************/
-void display_moves(const struct col_move_t moves[],size_t size_moves)
+void display_move(const struct col_move_t moves[],size_t size_moves)
 {
   printf("[");
   for(unsigned int i=0; i < size_moves; i++)
@@ -26,7 +26,7 @@ size_t grid_size = 0;
 int color = 0;
 
 char const* get_player_name() {
-  return("Random 2");
+  return("Random 1");
 }
 
 int is_already_played_opening(size_t a, size_t b, struct col_move_t const moves[], int size) {
@@ -98,7 +98,7 @@ int update_grid(struct col_move_t const previous_moves[], size_t n_moves) {
 }
 
 struct move_t play(struct col_move_t const previous_moves[], size_t n_moves) {
-  //display_moves(previous_moves,n_moves);
+  //display_move(previous_moves,n_moves);
   assert(update_grid(previous_moves, n_moves));
   struct move_t next_move;
   do {
