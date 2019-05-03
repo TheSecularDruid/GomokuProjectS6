@@ -98,11 +98,11 @@ int test_color_is_winning() {
   size_t size = 7;
   struct bitboard board = {rand()*power_of_2(64)+rand(),0};
   //print_board(board.white, size);
-  int first = (color_is_winning(board, WHITE, size, 5) == 0);
+  //int first = (color_is_winning(board, WHITE, size, 5) == 0);
   board.white |= 31;
   //print_board(board.white, size);
   int second = (color_is_winning(board, WHITE, size, 5) == 1);
-  return (first && second);
+  return (second);
 
 }
 
