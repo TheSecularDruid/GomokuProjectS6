@@ -57,6 +57,8 @@ int weigh(const struct bitboard* cur_pos) {
 
 int minimax(struct bitboard cur_pos,int cur_depth, enum color_t cur_color) {
     int move_value;
+    struct bitboard poss_board;
+    struct col_move_t move_col;
     enum color_t other_color;
     if (cur_color==WHITE)
 	other_color=BLACK;
@@ -64,31 +66,61 @@ int minimax(struct bitboard cur_pos,int cur_depth, enum color_t cur_color) {
 	other_color=WHITE;
 
     if (cur_depth ==0)
-	return weigh(play_move(&move,&board,grid_size));
-    int length = nb_of_poss(cur_board);    //we only consider adjacent move for complexity purposes
-    struct bitboard poss[length];
-    possible_boards(poss,cur_pos);
+	return weigh(&cur_pos);
+    int length = nb_of_poss(cur_pos,grid_size);
+    struct move_t poss_moves[length];
+    possible_moves(poss_moves,length,cur_pos,cur_color);
     if (cur_color==identity) {
 	move_value = -1000000;
-	for(size_t i=0;i<length;i++)
-	    move_value = max(move_value, minimax(poss[i],cur_depth-1,other_color));
+	for(int i=0;i<length;i++) {
+	    poss_board = cur_pos;
+	    move_col.m = poss_moves[i];
+	    move_col.c = other_color;
+	    play_move(&move_col,&poss_board,grid_size);
+	    move_value = max(move_value, minimax(poss_board,cur_depth-1,other_color));
+	}
     }
     else {
 	move_value = 1000000;
-	for(size_t i=0;i<length;i++)
-	    move_value = min(move_value,minimax(poss[i],cur_depth-1,other_color));
+	for(int i=0;i<length;i++) {
+	    poss_board = cur_pos;
+	    move_col.m = poss_moves[i];
+	    move_col.c = other_color;
+	    play_move(&move_col,&poss_board,grid_size);
+	    move_value = min(move_value, minimax(poss_board,cur_depth-1,other_color));
+	}
     }
     return move_value;
 }
 
+int indice_max(int tab[], int length) {
+    int max = tab[0];
+    int indice_max = 0;
+    for(int i=0;i<length;i++) {
+	if (tab[i]>max) {
+	    max = tab[i];
+	    indice_max = i;
+	}	    
+    }
+    return indice_max;
+}
+
 struct move_t play(struct col_move_t const previous_moves[], size_t n_moves) {
-    board = update_board(previous_moves,n_moves);
-    struct move_t[size*size] poss = possible_moves();
-    int[size*size] weigh;
-    for(size_t i=0;i<length;i++)
-	weigh[i] = minimax(move[i]);
-    int k = indice_max(weigh,length);
-    return poss[k];
+    update_board(previous_moves,n_moves);
+    int length = nb_of_poss(board,grid_size);
+    struct move_t poss_moves[length];
+    possible_moves(poss_moves,length,board,grid_size);
+    int weigh[length];
+    struct bitboard poss_board;
+    struct col_move_t col_move;
+    for(int i=0;i<length;i++) {
+	poss_board = board;
+	col_move.m = poss_moves[i];
+	col_move.c = identity;
+	play_move(&col_move,&poss_board,grid_size);
+	weigh[i] = minimax(board,DEPTH,identity);
+    }
+    return poss_moves[indice_max(weigh,length)];
 }
 
 void finalize() { 
