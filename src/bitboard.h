@@ -21,5 +21,10 @@ __uint128_t power_of_2(int power);
 __uint128_t move_to_board(struct move_t move, size_t size);
 int color_is_winning(struct bitboard board, enum color_t color, size_t size, size_t winning_threshold);
 struct move_t board_to_move(__uint128_t board, size_t size);
+int min(int a, int b);
+int max(int a, int b);
+int max_line_length(struct bitboard board, enum color_t color, size_t size);
+int nb_of_poss(struct bitboard board,size_t size);
+void possible_moves(struct move_t memory[],int length, struct bitboard board, size_t size);
 void print_board(__uint128_t to_print, size_t size);
 #endif

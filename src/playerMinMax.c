@@ -29,7 +29,11 @@ struct col_move_t* propose_opening(size_t size) {
     return move;   //apparently this is an equal opening, so that the opponent cannot take advantage of the proposed opening
 }
 
-//int accept_opening(size_t size, const struct col_move_t* opening);
+int accept_opening(size_t size, const struct col_move_t* opening) {
+    (void)size;
+    (void)opening;
+    return 1;
+}
 
 void initialize(size_t size, enum color_t id) {
     board = new_bitboard();
