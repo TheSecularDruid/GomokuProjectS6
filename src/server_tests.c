@@ -97,7 +97,7 @@ int test_compute_next_player()
 
 int test_update_last_moves()
 {
-  struct col_move_t * moves = malloc(sizeof(struct col_move_t[grid_size*grid_size]));;
+  struct col_move_t * moves = malloc(sizeof(struct col_move_t[25]));;
   struct col_move_t * previous_moves = malloc(sizeof(struct col_move_t[4]));
 
   update_last_moves(previous_moves,moves,3);
